@@ -1,0 +1,9 @@
+django
+
+psycopg
+psycopg[binary,pool]
+
+python-dotenv
+
+djangorestframework
+django-cors-headers
