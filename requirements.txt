@@ -6,4 +6,11 @@ psycopg[binary,pool]
 python-dotenv
 
 djangorestframework
+djangorestframework-simplejwt
+
 django-cors-headers
+
+dj-rest-auth
+django-allauth==0.52.0
+
+Pillow

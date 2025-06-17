@@ -1,4 +1,6 @@
+from django.conf import settings
 from django.db import models
+
 
 class Category(models.Model):
     name = models.CharField(max_length=100, unique=True)
@@ -7,6 +9,7 @@ class Category(models.Model):
         return self.name
 
 class Task(models.Model):
+    owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='tasks', null=True, blank=True)
     # --- Basic Info ---
     task_name = models.CharField(max_length=200) 
     description = models.TextField(blank=True, null=True) 
