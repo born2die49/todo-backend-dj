@@ -1,5 +1,6 @@
 from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated
+from django.db.models import Case, When, Value, IntegerField
 from .models import Task, Category
 from .serializers import TaskSerializer, CategorySerializer
 
@@ -17,7 +18,13 @@ class TaskViewSet(viewsets.ModelViewSet):
       for the currently authenticated user.
       """
       # The `request.user` is the User instance that is making the request.
-      return Task.objects.filter(owner=self.request.user).order_by('-add_date')
+      return Task.objects.filter(owner=self.request.user).order_by(
+        Case(
+              When(status='completed', then=Value(1)),
+              default=Value(0),
+              output_field=IntegerField(),
+        ),
+        '-add_date')
 
   def perform_create(self, serializer):
       """
