@@ -28,4 +28,4 @@ EXPOSE 8000
 
 # The command to run the application using Gunicorn
 # This is a production-grade WSGI server, unlike the Django development server.
-CMD ["gunicorn", "--bind", "0.0.0.0:8000", "todo.wsgi:application"]
+CMD ["gunicorn", "--bind", "0.0.0.0:8000", "--chdir", "django", "todo.wsgi:application"]
