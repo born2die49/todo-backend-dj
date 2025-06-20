@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-dotenv_path = os.path.join(BASE_DIR, '.env.dev')
+dotenv_path = os.path.join(BASE_DIR, '.env.prod')
 if os.path.exists(dotenv_path):
     load_dotenv(dotenv_path)
 
@@ -123,16 +123,27 @@ WSGI_APPLICATION = 'todo.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': os.environ.get("SQL_ENGINE"),
-        'NAME': os.environ.get("SQL_DATABASE"),
-        'USER': os.environ.get("SQL_USER"),
-        'PASSWORD': os.environ.get("SQL_PASSWORD"),
-        'HOST': os.environ.get("SQL_HOST"),
-        'PORT': os.environ.get("SQL_PORT"),
+import dj_database_url
+
+if 'DATABASE_URL' in os.environ:
+    DATABASES = {
+        'default': dj_database_url.config(
+            conn_max_age=600,
+            conn_health_checks=True,
+            ssl_require=True, # Neon requires SSL
+        )
     }
-}
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': os.environ.get("SQL_ENGINE"),
+            'NAME': os.environ.get("SQL_DATABASE"),
+            'USER': os.environ.get("SQL_USER"),
+            'PASSWORD': os.environ.get("SQL_PASSWORD"),
+            'HOST': os.environ.get("SQL_HOST"),
+            'PORT': os.environ.get("SQL_PORT"),
+        }
+    }
 
 
 # Password validation
@@ -170,6 +181,8 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
 STATIC_URL = 'static/'
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+
 MEDIA_URL = 'media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
