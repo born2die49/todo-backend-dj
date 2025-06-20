@@ -19,9 +19,16 @@ RUN pip install -r requirements.txt gunicorn
 # Copy the rest of the application's code into the container
 COPY . .
 
+# Run collectstatic by telling python where manage.py is
+# We execute it from within the /app/django directory.
+WORKDIR /app/django
+
 # Run collectstatic to gather all static files into one directory
 # This will be served by Nginx
 RUN python manage.py collectstatic --noinput
+
+# Change back to the parent directory for clarity, though not strictly necessary
+WORKDIR /app
 
 # The port the container will listen on (for internal communication)
 EXPOSE 8000
